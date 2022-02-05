@@ -19,3 +19,11 @@ FeedApp/__pycache__
 base/__pycache__/forms.cpython-39.pyc
 base/migrations/0004_auto_20220204_2332.py
 base/migrations/__pycache__/0004_auto_20220204_2332.cpython-39.pyc
+api/__pycache__/__init__.cpython-39.pyc
+api/__pycache__/admin.cpython-39.pyc
+api/__pycache__/apps.cpython-39.pyc
+api/__pycache__/models.cpython-39.pyc
+api/__pycache__/serializers.cpython-39.pyc
+api/__pycache__/urls.cpython-39.pyc
+api/__pycache__/views.cpython-39.pyc
+api/migrations/__pycache__/__init__.cpython-39.pyc

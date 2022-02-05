@@ -1,9 +1,11 @@
+from importlib.resources import contents
+from itertools import count
 from multiprocessing import context
 from django.shortcuts import redirect, render
 from .models import Room, Topic, Message
 # Create your views here.
-from .forms import RoomForm
-from django.db.models import Q
+from .forms import RoomForm, UserForm
+from django.db.models import Q, Count
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -61,9 +63,10 @@ def home(request):
         Q(description__icontains=q)
     )
     room_count = rooms.count()
-    topic = Topic.objects.all()
+    topic = Topic.objects.annotate(count=Count(
+        'room__topic__name')).order_by('-count')[0:7]
 
-    room_messages = Message.objects.filter(room__topic__name__icontains=q)
+    room_messages = Message.objects.filter(room__topic__name__icontains=q)[0:4]
 
     context = {'rooms': rooms, 'topics': topic,
                'rooms_count': room_count, 'room_messages': room_messages}
@@ -102,14 +105,18 @@ def deleteMessage(request, pk):
 @login_required(login_url='/login')
 def createRoom(request):
     form = RoomForm()
+    topic = Topic.objects.all()
     if request.method == "POST":
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            room=form.save(commit=False)
-            room.host=request.user
-            room.save()
-            return redirect('home')
-    context = {'form': form}
+        topic_name = request.POST['topic']
+        old_topic, created = Topic.objects.get_or_create(name=topic_name)
+        Room.objects.create(
+            host=request.user,
+            topic=old_topic,
+            name=request.POST['name'],
+            description=request.POST['description']
+        )
+        return redirect('home')
+    context = {'form': form, 'topics': topic}
     return render(request, 'base/room_form.html', context)
 
 
@@ -117,13 +124,16 @@ def createRoom(request):
 def updateRoom(request, pk):
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
-
+    topic = Topic.objects.all()
     if request.method == 'POST':
-        form = RoomForm(request.POST, instance=room)  # update room
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    context = {'form': form}
+        topic_name = request.POST['topic']
+        old_topic, created = Topic.objects.get_or_create(name=topic_name)
+        room.name = request.POST['name']
+        room.topic = old_topic
+        room.description = request.POST['description']
+        room.save()
+        return redirect('home')
+    context = {'form': form, 'topics': topic, 'room': room}
     return render(request, 'base/room_form.html', context)
 
 
@@ -136,6 +146,7 @@ def deleteRoom(request, pk):
     return render(request, 'base/delete.html', {'obj': room})
 
 
+@login_required(login_url='/login')
 def userProfile(request, pk):
     user = User.objects.get(id=pk)
     rooms = user.room_set.all()
@@ -144,3 +155,32 @@ def userProfile(request, pk):
     context = {'user': user, 'rooms': rooms,
                'room_messages': room_message, 'topics': topic}
     return render(request, 'base/profile.html', context)
+
+
+@login_required(login_url='/login')
+def updateUser(request):
+    user = request.user
+    form = UserForm(instance=user)
+
+    if request.method == "POST":
+        form = UserForm(request.POST, instance=user)
+
+        if form.is_valid():
+            return redirect('user-profile', pk=user.id)
+
+    context = {'form': form}
+    return render(request, 'base/update_user.html', context)
+
+
+def topicPage(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    q = q.strip()
+    topics = Topic.objects.filter(name__icontains=q)
+    context = {'topics': topics}
+    return render(request, 'base/topics.html', context)
+
+
+def activityPage(request):
+    room_messages = Message.objects.all()
+    context = {'room_messages': room_messages}
+    return render(request, 'base/activity.html', context)

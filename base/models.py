@@ -1,4 +1,3 @@
-from statistics import mode
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
@@ -40,3 +39,11 @@ class Message(models.Model):
 
     def __str__(self):
         return self.body[:50]
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        to=User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='pics', default='media/default.png')
+    name = models.CharField(default='Name Surname', max_length=200, null=True)
+    Bio = models.TextField()
