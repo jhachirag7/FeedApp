@@ -15,3 +15,7 @@ FeedApp/__pycache__/__init__.cpython-39.pyc
 FeedApp/__pycache__/settings.cpython-39.pyc
 FeedApp/__pycache__/urls.cpython-39.pyc
 FeedApp/__pycache__/wsgi.cpython-39.pyc
+FeedApp/__pycache__
+base/__pycache__/forms.cpython-39.pyc
+base/migrations/0004_auto_20220204_2332.py
+base/migrations/__pycache__/0004_auto_20220204_2332.cpython-39.pyc
