@@ -71,13 +71,14 @@ def registerPage(request):
         exists = User.objects.filter(email=email).exists()
         # existsu=User.objects.filter(user=form.fields['username']).exists()
         if form.is_valid() and exists == False:
+            email = email.strip()
             user = form.save(commit=False)
             current_site = get_current_site(request)
             email_subject = "Confirm Your email @FeedApp!!"
 
             message = render_to_string('base/email_confirmation.html', {
                 'name': user.username,
-                'emai': user.email,
+                'emai': email,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': generateToken.make_token(user),
@@ -86,7 +87,7 @@ def registerPage(request):
                 email_subject,
                 message,
                 settings.EMAIL_HOST_USER,
-                [user.email],
+                [email],
             )
             EmailTread(email).start()
             user.username = user.username.lower()
