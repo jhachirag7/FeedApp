@@ -71,7 +71,8 @@ def registerPage(request):
         exists = User.objects.filter(email=email).exists()
         # existsu=User.objects.filter(user=form.fields['username']).exists()
         if form.is_valid() and exists == False:
-            email = email.strip()
+            print(email)
+            email = email
             user = form.save(commit=False)
             current_site = get_current_site(request)
             email_subject = "Confirm Your email @FeedApp!!"
