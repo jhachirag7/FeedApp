@@ -72,11 +72,6 @@ def registerPage(request):
         # existsu=User.objects.filter(user=form.fields['username']).exists()
         if form.is_valid() and exists == False:
             user = form.save(commit=False)
-            user.username = user.username.lower()
-            user.save()
-            user.email = email
-            user.is_active = False
-            user.save()
             current_site = get_current_site(request)
             email_subject = "Confirm Your email @FeedApp!!"
 
@@ -94,6 +89,12 @@ def registerPage(request):
                 [user.email],
             )
             EmailTread(email).start()
+            user.username = user.username.lower()
+            user.save()
+            user.email = email
+            user.is_active = False
+            user.save()
+
             messages.success(
                 request, "Account successfully created for activation confirm your mail from your accounts")
             return redirect('login')
