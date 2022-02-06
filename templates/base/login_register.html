@@ -18,12 +18,11 @@
                 {% csrf_token %}
               <div class="form__group form__group">
                 <label for="room_name">Username</label>
-                <input id="username" name="username" type="text" required/>
+                <input name="username" type="text" required/>
               </div>
               <div class="form__group">
                 <label for="password">Password</label>
                 <input
-                  id="password"
                   name="password"
                   type="password"
                   required
@@ -72,6 +71,10 @@
 
             <form class="form" action="" method="post">
                 {% csrf_token %}
+                <div class="form__group form__group">
+                    <label for="room_name">E-mail</label>
+                    <input id="email_register"  name="email" type="email" required/>
+                  </div>
                 {% for field in form %}
               <div class="form__group form__group">
                 <label for="room_name">{{field.label}}</label>
@@ -111,4 +114,5 @@
 
       {% endif %}
     </main>
+    <script src="{% static 'js/register.js'%}">
 {% endblock content %}

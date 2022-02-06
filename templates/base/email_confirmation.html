@@ -1,0 +1,11 @@
+{% autoescape off %}
+
+Welcome to VisualExpenses
+
+Hello {{name}}!
+
+To confirm your {{email}} by clicking the Confirmation link below:
+
+Confirmation Link: http://{{domain}}{% url 'activate' uid64=uid token=token %}
+
+{% endautoescape %}

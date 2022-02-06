@@ -12,11 +12,15 @@
         <div class="profile">
           <div class="profile__avatar">
             <div class="avatar avatar--large active">
+              {% if profile.image %}
+              <img src="{{request.user.Profile.image.url}}" />
+              {% else %}
               <img src="{% static 'image/avatar.svg' %}" />
+              {% endif %}
             </div>
           </div>
           <div class="profile__info">
-            <h3>{{user.username}}</h3>
+            <h3>{{user.Profile.name}}</h3>
             <p>@{{user.username}}</p>
             {% if request.user == user %}
             <a href="{% url 'update-user' %}" class="btn btn--main btn--pill">Edit Profile</a>
@@ -25,16 +29,14 @@
           <div class="profile__about">
             <h3>About</h3>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur illo tenetur
-              facilis sunt nemo debitis quisquam hic atque aut? Ducimus alias placeat optio
-              accusamus repudiandae quis ab ex exercitationem rem?
+             {{profile.Bio}}
             </p>
           </div>
         </div>
 
         <div class="roomList__header">
           <div>
-            <h2>Study Rooms Hosted by {{user.username}}</a>
+            <h2>Rooms Hosted by {{user.username}}</a>
             </h2>
           </div>
         </div>

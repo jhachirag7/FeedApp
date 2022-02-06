@@ -1,4 +1,5 @@
 {% load static %}
+{% if request.user.is_authenticated%}
 <header class="header header--loggedIn">
     <div class="container">
         <a href="{% url 'home' %}" class="header__logo">
@@ -21,7 +22,11 @@
             <div class="header__user">
                 <a href="{% url 'user-profile' request.user.id %}">
                     <div class="avatar avatar--medium active">
+                        {% if request.user.Profile.image %}
+                        <img src="{{request.user.Profile.image.url}}" />
+                        {% else %}
                         <img src="{% static 'image/avatar.svg' %}" />
+                        {% endif %}
                     </div>
                     <p>{{request.user}} <span>@{{request.user}}</span></p>
                 </a>
@@ -58,6 +63,6 @@
         </nav>
     </div>
 </header>
-
+{%endif%}
 
 

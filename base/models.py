@@ -11,7 +11,7 @@ class Topic(models.Model):
 
 
 class Room(models.Model):
-    host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    host = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
@@ -43,7 +43,10 @@ class Message(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(
-        to=User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='pics', default='media/default.png')
-    name = models.CharField(default='Name Surname', max_length=200, null=True)
+        to=User, on_delete=models.CASCADE, related_name='Profile')
+    image = models.ImageField(upload_to='pics')
+    name = models.CharField(max_length=200, null=False)
     Bio = models.TextField()
+
+    def __str__(self):
+        return str(self.user)+'\'s'+' profile'

@@ -1163,3 +1163,6 @@ a {
   color: var(--color-main);
   font-weight: 1.4rem;
 }
+.form__group input.is-invalid{
+  border-color: #e74c3c;
+}
