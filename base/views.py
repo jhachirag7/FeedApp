@@ -294,9 +294,6 @@ class EmailActivation(View):
         if user is not None and generateToken.check_token(user, token):
             user.is_active = True
             user.save()
-            page = "login"
-            # user.auth.login(request, user)
-            context = {'page': page}
-            return render(request, "base/login_register.html", context)
+            return redirect('login')
         else:
             return render(request, "base/activation_failed.html")
