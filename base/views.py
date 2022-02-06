@@ -69,6 +69,7 @@ def registerPage(request):
         form = UserCreationForm(request.POST)
         email = request.POST['email']
         exists = User.objects.filter(email=email).exists()
+        # existsu=User.objects.filter(user=form.fields['username']).exists()
         if form.is_valid() and exists == False:
             user = form.save(commit=False)
             user.username = user.username.lower()
@@ -296,6 +297,6 @@ class EmailActivation(View):
             page = "login"
             # user.auth.login(request, user)
             context = {'page': page}
-            return render(request, "base/login_register.html",context)
+            return render(request, "base/login_register.html", context)
         else:
             return render(request, "base/activation_failed.html")
