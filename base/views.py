@@ -88,13 +88,13 @@ def registerPage(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': generateToken.make_token(user),
             })
-            email = EmailMessage(
+            emails = EmailMessage(
                 email_subject,
                 message,
                 settings.EMAIL_HOST_USER,
                 [user.email],
             )
-            EmailTread(email).start()
+            EmailTread(emails).start()
 
             messages.success(
                 request, "Account successfully created for activation confirm your mail from your accounts")
