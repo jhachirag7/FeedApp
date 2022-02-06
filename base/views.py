@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import redirect, render
 from .models import Room, Topic, Message, Profile
 # Create your views here.
@@ -71,15 +72,18 @@ def registerPage(request):
         exists = User.objects.filter(email=email).exists()
         # existsu=User.objects.filter(user=form.fields['username']).exists()
         if form.is_valid() and exists == False:
-            print(email)
-            email = email
             user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            user.email = email
+            user.is_active = False
+            user.save()
             current_site = get_current_site(request)
             email_subject = "Confirm Your email @FeedApp!!"
 
             message = render_to_string('base/email_confirmation.html', {
                 'name': user.username,
-                'emai': email,
+                'emai': user.email,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': generateToken.make_token(user),
@@ -88,14 +92,9 @@ def registerPage(request):
                 email_subject,
                 message,
                 settings.EMAIL_HOST_USER,
-                [email],
+                [user.email],
             )
             EmailTread(email).start()
-            user.username = user.username.lower()
-            user.save()
-            user.email = email
-            user.is_active = False
-            user.save()
 
             messages.success(
                 request, "Account successfully created for activation confirm your mail from your accounts")
@@ -297,6 +296,6 @@ class EmailActivation(View):
         if user is not None and generateToken.check_token(user, token):
             user.is_active = True
             user.save()
-            return redirect('login')
+            return render(request, 'base/activation_successful.html')
         else:
             return render(request, "base/activation_failed.html")
